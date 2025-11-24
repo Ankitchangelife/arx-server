@@ -1,0 +1,201 @@
+  AR.X NEW SERVER.html
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8" />
+\1
+
+  <!-- SEO Meta -->
+  <meta name="description" content="AR.X New Server Panel — Status, logs and controls.">
+  <meta property="og:title" content="AR.X NEW SERVER">
+  <meta property="og:description" content="Smart server panel with status, logs, and quick controls.">
+  <meta property="og:type" content="website">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23ff4d6d'/><text x='50' y='60' font-size='50' text-anchor='middle' fill='white'>A</text></svg>">
+
+<title>AR.X NEW SERVER</title>
+<style>
+:root{
+--bg:#0f1724;
+--card:#0b1220;
+--accent:#ff4d6d;
+--muted:#9aa6b2;
+--glass: rgba(255,255,255,0.03);
+}
+*{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans',sans-serif}
+body{margin:0;background:linear-gradient(180deg,#071021 0%,var(--bg) 100%);color:#e6eef6;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
+.wrap{width:100%;max-width:980px}
+header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.logo{
+width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ff7a5a);display:flex;align-items:center;justify-content:center;font-weight:700;color:#072033;font-size:20px;box-shadow:0 6px 18px rgba(0,0,0,0.5)
+}
+h1{margin:0;font-size:20px}
+p.lead{margin:4px 0 0;color:var(--muted);font-size:13px}
+
+.grid{display:grid;grid-template-columns:1fr 320px;gap:16px}
+.card{background:var(--card);border-radius:14px;padding:14px;box-shadow:0 6px 30px rgba(2,6,23,0.6)}
+.status-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.chip{padding:8px 12px;border-radius:999px;background:var(--glass);font-size:13px;color:var(--muted);display:inline-flex;align-items:center;gap:8px}
+.status-dot{width:10px;height:10px;border-radius:50%}
+.up{background:#28c76f}
+.down{background:#ff4d6d}
+.controls{display:flex;gap:10px;margin-top:12px}
+button{cursor:pointer;border:0;padding:10px 14px;border-radius:10px;background:linear-gradient(180deg,#0f172b,#072033);color:#e6eef6;font-weight:600}
+button.primary{background:linear-gradient(180deg,var(--accent),#ff7a5a);color:#072033;box-shadow:0 8px 22px rgba(255,77,109,0.16)}
+small{color:var(--muted);display:block;margin-top:8px}
+
+/* logs */
+.logs{height:300px;overflow:auto;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);padding:12px;border-radius:10px;font-family:monospace;font-size:13px;color:#cfe9ff}
+.right .card{position:sticky;top:18px}
+.field{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+label{font-size:13px;color:var(--muted)}
+input[type=text]{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit}
+footer{margin-top:14px;color:var(--muted);font-size:13px;text-align:center}
+@media(max-width:880px){
+.grid{grid-template-columns:1fr; }
+.right .card{position:static}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="logo">AR.X</div>
+<div>
+<h1>AR.X NEW SERVER</h1>
+<p class="lead">सरल सर्वर-पैनल — स्टेटस, लॉग और कस्टम कमांड</p>
+</div>
+</header>
+
+<div class="grid">
+<main class="card">
+<div class="status-row">
+<div class="chip"><span class="status-dot up" id="dot"></span> <strong id="statusText">ONLINE</strong></div>
+<div class="chip">IP: <strong id="ip">192.168.0.101</strong></div>
+<div class="chip">Port: <strong id="port">8080</strong></div>
+</div>
+
+<div class="field">
+<label>Server name</label>
+<input id="serverName" type="text" value="AR.X NEW SERVER" />
+</div>
+
+<div class="controls">
+<button id="restartBtn">Restart</button>
+<button class="primary" id="startStopBtn">Stop Server</button>
+<button id="clearLogBtn">Clear Logs</button>
+</div>
+
+<small id="lastAction">Last action: none</small>
+
+<h3 style="margin-top:14px">Live Logs</h3>
+<div class="logs" id="logs">
+<!-- logs will appear here -->
+[INFO] Server initialized.<br>[INFO] Listening on 0.0.0.0:8080<br>
+</div>
+</main>
+
+<aside class="right">
+<div class="card">
+<h3>Quick Controls</h3>
+<div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+<button id="fakeCrash">Simulate Crash</button>
+<button id="fakeError">Add Error Log</button>
+<button id="openConsole">Open Console</button>
+</div>
+
+<div class="field">
+<label>Custom command (simulated)</label>
+<input id="cmdInput" type="text" placeholder="eg: backup --save" />
+<div style="display:flex;gap:8px;margin-top:8px">
+<button id="runCmd">Run</button>
+</div>
+</div>
+
+<footer>Made with ❤ — AR.X</footer>
+</div>
+</aside>
+</div>
+</div>
+
+<script>
+// Simple client-side simulation logic (no real server control)
+const logs = document.getElementById('logs')
+const dot = document.getElementById('dot')
+const statusText = document.getElementById('statusText')
+const startStopBtn = document.getElementById('startStopBtn')
+const restartBtn = document.getElementById('restartBtn')
+const clearLogBtn = document.getElementById('clearLogBtn')
+const fakeCrash = document.getElementById('fakeCrash')
+const fakeError = document.getElementById('fakeError')
+const runCmd = document.getElementById('runCmd')
+const cmdInput = document.getElementById('cmdInput')
+const lastAction = document.getElementById('lastAction')
+
+let online = true
+
+function addLog(level, text){
+const time = new Date().toLocaleTimeString()
+logs.innerHTML = '['+level+'] ' + time + ' - ' + text + '<br>' + logs.innerHTML
+}
+
+startStopBtn.addEventListener('click', () => {
+online = !online
+updateStatus()
+addLog('INFO', online ? 'Server started' : 'Server stopped by user')
+lastAction.textContent = 'Last action: ' + (online ? 'Started' : 'Stopped') + ' at ' + new Date().toLocaleTimeString()
+})
+
+restartBtn.addEventListener('click', () => {
+addLog('INFO', 'Server restarting...')
+lastAction.textContent = 'Last action: Restart at ' + new Date().toLocaleTimeString()
+setTimeout(()=> {
+addLog('INFO','Server restarted successfully.')
+}, 1200)
+})
+
+clearLogBtn.addEventListener('click', ()=> {
+logs.innerHTML = ''
+addLog('INFO','Logs cleared')
+})
+
+fakeCrash.addEventListener('click', ()=> {
+online = false
+updateStatus()
+addLog('CRITICAL','Unexpected crash at PID 4521')
+lastAction.textContent = 'Last action: Crash simulated'
+})
+
+fakeError.addEventListener('click', ()=> {
+addLog('ERROR','Database connection timed out (retrying...)')
+lastAction.textContent = 'Last action: Error log appended'
+})
+
+runCmd.addEventListener('click', ()=> {
+const cmd = cmdInput.value.trim()
+if(!cmd) { addLog('WARN','No command to run'); return }
+addLog('CMD','Running: ' + cmd)
+lastAction.textContent = 'Last action: Ran "' + cmd + '"'
+cmdInput.value = ''
+})
+
+function updateStatus(){
+if(online){
+dot.classList.remove('down'); dot.classList.add('up')
+statusText.textContent = 'ONLINE'
+startStopBtn.textContent = 'Stop Server'
+startStopBtn.classList.add('primary')
+} else {
+dot.classList.remove('up'); dot.classList.add('down')
+statusText.textContent = 'OFFLINE'
+startStopBtn.textContent = 'Start Server'
+startStopBtn.classList.remove('primary')
+}
+}
+
+// Init
+updateStatus()
+</script>
+</body>
+</html>
